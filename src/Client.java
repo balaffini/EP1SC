@@ -4,9 +4,9 @@ import java.util.List;
 public class Client {
     public static final List<Client> clients = new LinkedList<>();
     private Integer id;
-    private Integer arrivalTime;
-    private Double serviceTime;
-    private Integer departureTime;
+    private Integer arrivalTime; //tk
+    private Double serviceTime; //mi
+    private Integer departureTime; //tk final de atendimento
     private Integer guicheId;
 
     public Client(Integer arrivalTime, Double serviceTimeConstant) {
@@ -19,7 +19,7 @@ public class Client {
     }
 
     private Double calculateServiceTime(Double serviceTimeConstant) {
-        return -serviceTimeConstant * Math.log(Math.random()); // TODO
+        return serviceTimeConstant * Math.log(Math.random()); // TODO distribuicao normal baseada em mi
     }
 
     public Integer getId() {

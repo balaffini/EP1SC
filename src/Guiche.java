@@ -1,7 +1,7 @@
 public class Guiche {
     private Integer id;
     private Boolean available;
-    private Integer client;
+    private Client client;
 
     public Guiche(Integer id) {
         this.id = id;
@@ -17,11 +17,11 @@ public class Guiche {
         this.available = available;
     }
 
-    public Integer getClient() {
+    public Client getClient() {
         return client;
     }
 
-    public void setClient(Integer client) {
+    public void setClient(Client client) {
         this.client = client;
     }
 
