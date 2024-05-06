@@ -1,3 +1,5 @@
+import java.util.Optional;
+
 public class Guiche {
     private Integer id;
     private Boolean available;
@@ -7,6 +9,16 @@ public class Guiche {
         this.id = id;
         this.available = true;
         this.client = null;
+    }
+
+    @Override
+    public String toString() {
+        String clientString = client == null ? "null" : client.getId().toString() + " leaves at " + client.getDepartureTime();
+        return "\nGuiche{" +
+                "id=" + id +
+                ", available=" + available +
+                ", client=" + clientString +
+                '}';
     }
 
     public Boolean getAvailable() {

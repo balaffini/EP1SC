@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Queue;
 
 public class Atendimento {
+    final List<Client> clients;
     final Queue<Integer> queue; //fila de clientes
     final List<Guiche> availableGuiches;
     final List<Guiche> busyGuiches;
@@ -15,6 +16,7 @@ public class Atendimento {
     }
 
     public Atendimento() {
+        this.clients = new LinkedList<>();
         this.queue = new ArrayDeque<>();
         this.availableGuiches = new LinkedList<>();
         this.busyGuiches = new LinkedList<>();
@@ -27,35 +29,46 @@ public class Atendimento {
             availableGuiches.add(new Guiche(g));
         }
 
+        int nextClientTime = 0;
+
         for (int tk = 0; tk < Main.t; tk++) {
-            //            System.out.println("Tempo: " + tk);
-            //            System.out.println("Fila: " + queue.size());
-            //            System.out.println("Guiches disponíveis: " + availableGuiches.size());
-            //            System.out.println("Guiches ocupados: " + busyGuiches.size());
-            //            System.out.println("Clientes atendidos: " + x);
-            //            System.out.println("Clientes que desistiram: " + y);
-            //            if (x + y == 0) {
-            //                System.out.println("Taxa de abandonoo: 0");
-            //            } else {
-            //                double taxaAbandono = (double) y/(x + y);
-            //                System.out.println("Taxa de abandono: " + taxaAbandono);
-            //            }
+            System.out.println("\nTempo: " + tk);
+//            System.out.println("Próximo cliente: " + nextClientTime);
+            System.out.println("Fila: " + queue.size());
+            System.out.println("Guiches disponíveis: " + availableGuiches.size());
+            System.out.println("Guiches ocupados: " + busyGuiches.size());
+            System.out.println("Total clientes: " + clients.size());
+            System.out.println("Clientes atendidos: " + x);
+            System.out.println("Clientes que desistiram: " + y);
+            if (x + y == 0) {
+                System.out.println("Taxa de abandonoo: 0");
+            } else {
+                double taxaAbandono = (double) y/(x + y);
+                System.out.println("Taxa de abandono: " + taxaAbandono);
+            }
 
             final int instantTk = tk;
+            final List<Guiche> attendedClients = new LinkedList<>();
             busyGuiches.forEach(guiche -> {
                 if (canFinishForClient(guiche, instantTk)) {
-                    finishServiceAndMoveQueue(guiche);
+                    attendedClients.add(guiche);
                 }
             });
+            if (!attendedClients.isEmpty()) {
+                finishServiceAndMoveQueue(attendedClients, tk);
+            }
 
-            if (tk % 3 == 0) { //vai chegar um cliente?  TODO calculo em cima de lambda
-                Client client = new Client(tk, Main.mi);
+            if (tk >= nextClientTime) { //vai chegar um cliente?
+                nextClientTime = tk + (int) Math.ceil(Main.generateLambdaStandardDeviation()*1);
+
+                Client client = new Client(clients.size(), tk);
+                clients.add(client);
 
                 if (availableGuiches.isEmpty()) {
                     addClientToQueueOrAbandonCart(client.getId());
                 } else {
                     Guiche guiche = availableGuiches.get(0);
-                    attendClient(guiche, client);
+                    attendClient(guiche, client, tk);
                 }
             }
         }
@@ -63,28 +76,32 @@ public class Atendimento {
     }
 
     private boolean canFinishForClient(Guiche guiche, int tk) {
-        return guiche.getClient().getDepartureTime() >= tk;
+        return guiche.getClient().getDepartureTime() <= tk;
     }
 
-    private void finishServiceAndMoveQueue(Guiche guiche) {
-        guiche.setAvailable(true);
-        guiche.setClient(null);
-        busyGuiches.remove(guiche);
-        availableGuiches.add(guiche);
+    private void finishServiceAndMoveQueue(List<Guiche> guiches, int tk) {
+        guiches.forEach(g -> {
+            g.getClient().setAttended(true);
+            g.setAvailable(true);
+            g.setClient(null);
+        });
+        busyGuiches.removeAll(guiches);
+        availableGuiches.addAll(guiches);
+        x += guiches.size(); //foram atendidos
 
         //pegar um da fila
         if (!queue.isEmpty()) {
-            Client client = Client.clients.get(queue.poll());
-            attendClient(guiche, client);
+            Client client = clients.get(queue.poll());
+            attendClient(availableGuiches.get(0), client, tk);
         }
     }
 
-    private void attendClient(Guiche guiche, Client client) {
+    private void attendClient(Guiche guiche, Client client, int tk) {
         guiche.setAvailable(false);
         guiche.setClient(client);
+        client.setAttending(guiche.getId(), tk);
         availableGuiches.remove(guiche);
         busyGuiches.add(guiche);
-        x++; //foi atendido
     }
 
     private void addClientToQueueOrAbandonCart(int client) {

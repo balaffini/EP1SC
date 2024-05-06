@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="601e7cff-710d-4935-886f-c6626b582a40" name="Changes" comment="Creating base">
-      <change afterPath="$PROJECT_DIR$/src/Atendimento.java" afterDir="false" />
+    <list default="true" id="601e7cff-710d-4935-886f-c6626b582a40" name="Changes" comment="Creating Atendimento and fixing some things">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Atendimento.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Atendimento.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Guiche.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Guiche.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
@@ -68,7 +68,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1714794215643</updated>
-      <workItem from="1714794217062" duration="10816000" />
+      <workItem from="1714794217062" duration="18141000" />
     </task>
     <task id="LOCAL-00001" summary="Creating base">
       <created>1714797736255</created>
@@ -77,7 +77,14 @@
       <option name="project" value="LOCAL" />
       <updated>1714797736255</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Creating Atendimento and fixing some things">
+      <created>1714941810436</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1714941810436</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -96,6 +103,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Creating base" />
-    <option name="LAST_COMMIT_MESSAGE" value="Creating base" />
+    <MESSAGE value="Creating Atendimento and fixing some things" />
+    <option name="LAST_COMMIT_MESSAGE" value="Creating Atendimento and fixing some things" />
   </component>
 </project>
