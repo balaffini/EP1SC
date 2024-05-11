@@ -32,47 +32,56 @@ public class Atendimento {
         int nextClientTime = 0;
 
         for (int tk = 0; tk < Main.t; tk++) {
-            System.out.println("\nTempo: " + tk);
-//            System.out.println("Próximo cliente: " + nextClientTime);
-            System.out.println("Fila: " + queue.size());
-            System.out.println("Guiches disponíveis: " + availableGuiches.size());
-            System.out.println("Guiches ocupados: " + busyGuiches.size());
-            System.out.println("Total clientes: " + clients.size());
-            System.out.println("Clientes atendidos: " + x);
-            System.out.println("Clientes que desistiram: " + y);
-            if (x + y == 0) {
-                System.out.println("Taxa de abandonoo: 0");
-            } else {
-                double taxaAbandono = (double) y/(x + y);
-                System.out.println("Taxa de abandono: " + taxaAbandono);
-            }
-
-            final int instantTk = tk;
-            final List<Guiche> attendedClients = new LinkedList<>();
-            busyGuiches.forEach(guiche -> {
-                if (canFinishForClient(guiche, instantTk)) {
-                    attendedClients.add(guiche);
-                }
-            });
-            if (!attendedClients.isEmpty()) {
-                finishServiceAndMoveQueue(attendedClients, tk);
-            }
+//            printRound(tk, nextClientTime);
+            selectClientsToFinishService(tk);
 
             if (tk >= nextClientTime) { //vai chegar um cliente?
-                nextClientTime = tk + (int) Math.ceil(Main.generateLambdaStandardDeviation()*1);
-
-                Client client = new Client(clients.size(), tk);
-                clients.add(client);
-
-                if (availableGuiches.isEmpty()) {
-                    addClientToQueueOrAbandonCart(client.getId());
-                } else {
-                    Guiche guiche = availableGuiches.get(0);
-                    attendClient(guiche, client, tk);
-                }
+                nextClientTime = tk + (int) Math.ceil(Main.generateLambdaStandardDeviation()*Main.lambda);
+                clientArrival(tk);
             }
         }
         Main.setIterationResults(x, y, w());
+    }
+
+    private void clientArrival(int tk) {
+        Client client = new Client(clients.size(), tk);
+        clients.add(client);
+
+        if (availableGuiches.isEmpty()) {
+            addClientToQueueOrAbandonCart(client.getId());
+        } else {
+            Guiche guiche = availableGuiches.get(0);
+            attendClient(guiche, client, tk);
+        }
+    }
+
+    private void selectClientsToFinishService(int tk) {
+        final List<Guiche> attendedClients = new LinkedList<>();
+        busyGuiches.forEach(guiche -> {
+            if (canFinishForClient(guiche, tk)) {
+                attendedClients.add(guiche);
+            }
+        });
+        if (!attendedClients.isEmpty()) {
+            finishServiceAndMoveQueue(attendedClients, tk);
+        }
+    }
+
+    private void printRound(int tk, int nextClientTime) {
+        System.out.println("\nTempo: " + tk);
+        System.out.println("Próximo cliente: " + nextClientTime);
+        System.out.println("Fila: " + queue.size());
+        System.out.println("Guiches disponíveis: " + availableGuiches.size());
+        System.out.println("Guiches ocupados: " + busyGuiches.size());
+        System.out.println("Total clientes: " + clients.size());
+        System.out.println("Clientes atendidos: " + x);
+        System.out.println("Clientes que desistiram: " + y);
+        if (x + y == 0) {
+            System.out.println("Taxa de abandonoo: 0");
+        } else {
+            double taxaAbandono = (double) y/(x + y);
+            System.out.println("Taxa de abandono: " + taxaAbandono);
+        }
     }
 
     private boolean canFinishForClient(Guiche guiche, int tk) {

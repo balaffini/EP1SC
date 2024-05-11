@@ -11,7 +11,7 @@ public class Main {
         return taxasDeAbandono.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
     }
 
-    static final double lambda = 4.0; //taxa de intervalo de chegada
+    static final double lambda = 3.0; //taxa de intervalo de chegada
     static final int t = 50; //tempo de simulação
     static final double mi = 0.5; //taxa de atendimento
     static final int nGuiches = 5; //número de guichês
@@ -22,28 +22,30 @@ public class Main {
     }
 
     public static void main(String[] args) {
-//        do {
-                for (int n = 0; n < 1; n++) {
-                    System.out.println("\nRodada: " + (n+1));
+        do {
+            for (int n = 0; n < iteration; n++) {
+//                System.out.println("Rodada: " + (n+1));
 
-                    Atendimento atendimento = new Atendimento();
-                    atendimento.simulate();
-                }
+                Atendimento atendimento = new Atendimento();
+                atendimento.simulate();
+            }
 
-                System.out.println("\nFinal da simulação " + iteration/500);
-                System.out.println("Média clientes atendidos: " + clientesAtendidos.stream().mapToInt(Integer::intValue).average().orElse(0));
-                System.out.println("Média clientes que foram embora: " + clientesQueForamEmbora.stream().mapToInt(Integer::intValue).average().orElse(0));
-                System.out.println("Taxa de abandono média: " + wMedio());
+            System.out.println("\nFinal da simulação " + iteration/500);
+            System.out.println("Média clientes atendidos: " + clientesAtendidos.stream().mapToInt(Integer::intValue).average().orElse(0));
+            System.out.println("Média clientes que foram embora: " + clientesQueForamEmbora.stream().mapToInt(Integer::intValue).average().orElse(0));
+            System.out.println("Taxa de abandono média: " + (int) (wMedio()*100) + "%");
 
-                nextIteration();
-//        } while (wMedio() < 0.002);
+            nextIteration();
+        } while (calculateIntervalAmplitude() >= 0.002 || wMedio() >= 0.2);
     }
 
+
+
     public static void setIterationResults(int x, int y, double w) {
-        System.out.println("\nTotal da última execução");
-        System.out.println("Clientes atendidos: " + x);
-        System.out.println("Clientes que foram embora: " + y);
-        System.out.println("Taxa de abandono: " + w);
+//        System.out.println("\nTotal da última execução");
+//        System.out.println("Clientes atendidos: " + x);
+//        System.out.println("Clientes que foram embora: " + y);
+//        System.out.println("Taxa de abandono: " + w);
 
         clientesAtendidos.add(x);
         clientesQueForamEmbora.add(y);
@@ -52,13 +54,35 @@ public class Main {
 
     public static double generateLambdaStandardDeviation() {
         Random random = new Random();
-        double z = -Math.log(1 - random.nextDouble()) / lambda;
-        return z;
+        return Math.log(1 - random.nextDouble()) / -lambda;
     }
 
     public static double generateMiStandardDeviation() {
         Random random = new Random();
-        double z = -Math.log(1 - random.nextDouble()) / mi;
-        return z;
+        return Math.log(1 - random.nextDouble()) / -mi;
+    }
+
+    private static double calculateIntervalAmplitude() {
+        double z = 1.96; // intervalo de confiança de 95%
+        double amplitude = 2 * z * calculateWStandardError();// * Math.exp(wMedio());
+
+        System.out.println("A amplitude do intervalo de confiança é: " + amplitude);
+        if (amplitude < 0.002) {
+            System.out.println("A amplitude do intervalo de confiança é menor que 0.002");
+        } else {
+            System.out.println("A amplitude do intervalo de confiança é maior ou igual a 0.002");
+        }
+        return amplitude;
+    }
+
+    private static double calculateWStandardError() {
+        double sumOfSquares = taxasDeAbandono.stream().mapToDouble(num -> Math.pow(num - wMedio(), 2)).sum();
+
+        double standardDeviation = Math.sqrt(sumOfSquares / (taxasDeAbandono.size() - 1));
+        double standardError = standardDeviation / Math.sqrt(taxasDeAbandono.size());
+
+        System.out.println("O erro padrão da taxa de abandono é: " + standardError);
+
+        return standardError;
     }
 }

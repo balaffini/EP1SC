@@ -1,10 +1,7 @@
-import java.util.LinkedList;
-import java.util.List;
-
 public class Client {
-    private Integer id;
-    private Integer arrivalTime; //tk
-    private Double serviceTime; //mi
+    private final Integer id;
+    private final Integer arrivalTime; //tk
+    private final Double serviceTime; //mi
     private Integer arrivalTimeAtGuiche; //tk de chegada no guiche
     private Integer departureTime; //tk final de atendimento
     private Integer guicheId;
@@ -14,19 +11,19 @@ public class Client {
         this.id = id;
         this.arrivalTime = arrivalTime;
         this.serviceTime = calculateServiceTime();
-        this.departureTime = Main.t+1; //TODO
+        this.departureTime = Main.t+1;
         this.guicheId = null;
         this.attended = false;
     }
 
     private Double calculateServiceTime() {
-        return Main.generateMiStandardDeviation();
+        return Main.generateMiStandardDeviation()*Main.mi;
     }
 
     public void setAttending(Integer guicheId, Integer arrivalTimeAtGuiche) {
         this.guicheId = guicheId;
         this.arrivalTimeAtGuiche = arrivalTimeAtGuiche;
-        this.departureTime = arrivalTimeAtGuiche + (int) Math.ceil(serviceTime) + 8;
+        this.departureTime = arrivalTimeAtGuiche + (int) Math.ceil(serviceTime) + 1;
     }
 
     @Override
@@ -34,9 +31,11 @@ public class Client {
         return "\nClient{" +
                 "id=" + id +
                 ", arrivalTime=" + arrivalTime +
+                ", arrivalTimeAtGuiche=" + arrivalTimeAtGuiche +
                 ", serviceTime=" + serviceTime.intValue() +
                 ", departureTime=" + departureTime +
                 ", guicheId=" + guicheId +
+                ", attended=" + attended +
                 '}';
     }
 
@@ -44,32 +43,8 @@ public class Client {
         return id;
     }
 
-    public Integer getArrivalTime() {
-        return arrivalTime;
-    }
-
-    public Double getServiceTime() {
-        return serviceTime;
-    }
-
     public Integer getDepartureTime() {
         return departureTime;
-    }
-
-    public void setDepartureTime(Integer departureTime) {
-        this.departureTime = departureTime;
-    }
-
-    public Integer getGuicheId() {
-        return guicheId;
-    }
-
-    public void setGuicheId(Integer guicheId) {
-        this.guicheId = guicheId;
-    }
-
-    public boolean isAttended() {
-        return attended;
     }
 
     public void setAttended(boolean attended) {

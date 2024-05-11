@@ -1,7 +1,5 @@
-import java.util.Optional;
-
 public class Guiche {
-    private Integer id;
+    private final Integer id;
     private Boolean available;
     private Client client;
 
