@@ -17,13 +17,14 @@ public class Client {
     }
 
     private Double calculateServiceTime() {
-        return Main.generateMiStandardDeviation()*Main.mi;
+        return Main.generateStandardDeviation((1/Main.mi));
     }
 
     public void setAttending(Integer guicheId, Integer arrivalTimeAtGuiche) {
         this.guicheId = guicheId;
         this.arrivalTimeAtGuiche = arrivalTimeAtGuiche;
         this.departureTime = arrivalTimeAtGuiche + (int) Math.ceil(serviceTime) + 1;
+        System.out.println("Cliente " + id + " atendido no guiche " + guicheId + " de " + arrivalTimeAtGuiche + " até " + departureTime);
     }
 
     @Override

@@ -36,7 +36,8 @@ public class Atendimento {
             selectClientsToFinishService(tk);
 
             if (tk >= nextClientTime) { //vai chegar um cliente?
-                nextClientTime = tk + (int) Math.ceil(Main.generateLambdaStandardDeviation()*Main.lambda);
+                nextClientTime = tk + (int) Math.ceil(Main.generateStandardDeviation((1/Main.lambda)));
+                System.out.println("Em " + tk + " chegou um cliente e o próximo será em " + nextClientTime);
                 clientArrival(tk);
             }
         }

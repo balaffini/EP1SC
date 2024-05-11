@@ -37,6 +37,7 @@ public class Main {
 
             nextIteration();
         } while (calculateIntervalAmplitude() >= 0.002 || wMedio() >= 0.2);
+        System.out.println("Iterações necessárias: " + (iteration-500));
     }
 
 
@@ -52,14 +53,11 @@ public class Main {
         taxasDeAbandono.add(w);
     }
 
-    public static double generateLambdaStandardDeviation() {
+    public static double generateStandardDeviation(double constant) {
         Random random = new Random();
-        return Math.log(1 - random.nextDouble()) / -lambda;
-    }
-
-    public static double generateMiStandardDeviation() {
-        Random random = new Random();
-        return Math.log(1 - random.nextDouble()) / -mi;
+        double std = Math.log(1 - random.nextDouble()) / (-constant);
+        System.out.println("\nStandard Deviation for " + constant + ": " + std);
+        return std;
     }
 
     private static double calculateIntervalAmplitude() {
