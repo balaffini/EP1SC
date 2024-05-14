@@ -15,6 +15,13 @@ public class Atendimento {
         return (double) y/(x + y);
     }
 
+    int tmAtendimento = 0; //tempo maximo de atendimento
+    void setTmAtendimento(int t) {
+        if (t > tmAtendimento) {
+            tmAtendimento = t;
+        }
+    }
+
     public Atendimento() {
         this.clients = new LinkedList<>();
         this.queue = new ArrayDeque<>();
@@ -32,16 +39,14 @@ public class Atendimento {
         int nextClientTime = 0;
 
         for (int tk = 0; tk < Main.t; tk++) {
-//            printRound(tk, nextClientTime);
             selectClientsToFinishService(tk);
 
             if (tk >= nextClientTime) { //vai chegar um cliente?
-                nextClientTime = tk + (int) Math.ceil(Main.generateStandardDeviation((1/Main.lambda)));
-                System.out.println("Em " + tk + " chegou um cliente e o próximo será em " + nextClientTime);
+                nextClientTime = tk + (int) Math.ceil(Main.generateStandardDeviation(Main.lambda) * 1/Main.lambda);
                 clientArrival(tk);
             }
         }
-        Main.setIterationResults(x, y, w());
+        Main.setIterationResults(x, y, w(), tmAtendimento);
     }
 
     private void clientArrival(int tk) {
@@ -92,6 +97,7 @@ public class Atendimento {
     private void finishServiceAndMoveQueue(List<Guiche> guiches, int tk) {
         guiches.forEach(g -> {
             g.getClient().setAttended(true);
+            setTmAtendimento(g.getClient().getDepartureTime() - g.getClient().getArrivalTime());
             g.setAvailable(true);
             g.setClient(null);
         });
